@@ -127,6 +127,16 @@ public:
 		++nelms;
 	}
 
+	void push_back(T&& newvalue)
+	{
+		emplace_back(std::move(newvalue));
+	}
+
+	void push_front(T&& newvalue)
+	{
+		emplace_front(std::move(newvalue));
+	}
+
 	void pop_back()
 	{
 		if (empty())
