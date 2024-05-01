@@ -183,3 +183,14 @@ TEST_F(testResourceList, updateNelmsUsingEmplaceFront)
 	listForTesting.emplace_front(100);
 	EXPECT_EQ(listForTesting.size(), 1);
 }
+
+// constructor by movement 
+
+TEST_F(testResourceList, constructorByMovementshouldNotMakeCopies)
+{
+	listForTesting.emplace_back(testResource());
+	listForTesting.emplace_back(testResource());
+	listForTesting.emplace_back(testResource());
+	list<testResource> resourceList = std::move(listForTesting);
+	EXPECT_EQ(testResource::copyConstructor, 0);
+}

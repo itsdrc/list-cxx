@@ -81,6 +81,18 @@ public:
 		deepCopy(list);
 	}	
 
+	list(list&& list) noexcept
+	{
+		nelms = list.nelms;
+		head.next = list.head.next;
+		head.previous = list.head.previous;
+		list.head.previous->next = &head;
+		list.head.next->previous = &head;
+		list.head.next = &list.head;
+		list.head.previous = &list.head;
+		list.nelms = 0;
+	}
+
 	void push_back(const T& newvalue)
 	{
 		node* new_node = new node(newvalue, head.previous, &head);
