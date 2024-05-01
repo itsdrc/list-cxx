@@ -111,10 +111,30 @@ TEST(pop_front, ifListEmptyShouldThrowException)
 	EXPECT_THROW(emptylist.pop_front(), std::length_error);
 }
 
-// Initializer list
+// initializer list
 
 TEST(initializerListConstructor, shouldConstructTheList)
 {
 	intlist list{ 1, 2, 3, 4, 5 };
 	EXPECT_EQ(list.size(), 5);
+}
+
+// copy constructor
+
+TEST(copyConstructor, shouldCopySuccefully)
+{
+	intlist list{ 1, 2, 3 };
+	intlist list2 = list;
+	ASSERT_EQ(list.front(), 1);
+	list.pop_front();
+	ASSERT_EQ(list.front(), 2);
+	list.pop_front();
+	ASSERT_EQ(list.front(), 3);
+}
+
+TEST(copyConstructor, shouldsetNelms)
+{
+	intlist list{ 1, 2, 3, 4, 5 };
+	intlist list2 = list;
+	EXPECT_EQ(list.size(), list2.size());
 }

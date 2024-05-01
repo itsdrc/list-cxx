@@ -76,6 +76,11 @@ public:
 			push_back(e);
 	}
 
+	list(const list& list) : list()
+	{
+		deepCopy(list);
+	}
+
 	void push_back(const T& newvalue)
 	{
 		node* new_node = new node(newvalue, head.previous, &head);
