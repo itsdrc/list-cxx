@@ -70,6 +70,12 @@ public:
 		nelms = 0;
 	}
 
+	list(const std::initializer_list<T>& list) : list()
+	{
+		for (const T& e : list)
+			push_back(e);
+	}
+
 	void push_back(const T& newvalue)
 	{
 		node* new_node = new node(newvalue, head.previous, &head);

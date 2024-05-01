@@ -110,3 +110,11 @@ TEST(pop_front, ifListEmptyShouldThrowException)
 	intlist emptylist;
 	EXPECT_THROW(emptylist.pop_front(), std::length_error);
 }
+
+// Initializer list
+
+TEST(initializerListConstructor, shouldConstructTheList)
+{
+	intlist list{ 1, 2, 3, 4, 5 };
+	EXPECT_EQ(list.size(), 5);
+}
