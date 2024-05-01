@@ -1,7 +1,4 @@
-﻿// list.cpp : Defines the entry point for the application.
-//
-
-#include<iostream>
+﻿#include<iostream>
 #include "list.h"
 
 int main()
