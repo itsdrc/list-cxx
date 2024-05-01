@@ -79,13 +79,31 @@ public:
 	list(const list& list) : list()
 	{
 		deepCopy(list);
-	}
+	}	
 
 	void push_back(const T& newvalue)
 	{
 		node* new_node = new node(newvalue, head.previous, &head);
 		head.previous->next = new_node;
 		head.previous = new_node;
+		++nelms;
+	}
+
+	template <typename... Args>
+	void emplace_back(Args &&...args)
+	{
+		node* new_node = new node(head.previous, &head, std::forward<Args>(args)...);
+		head.previous->next = new_node;
+		head.previous = new_node;
+		++nelms;
+	}
+
+	template<typename... Args>
+	void emplace_front(Args&& ...args)
+	{
+		node* new_node = new node(&head, head.next, std::forward<Args>(args)...);
+		head.next->previous = new_node;
+		head.next = new_node;
 		++nelms;
 	}
 

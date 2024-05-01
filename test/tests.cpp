@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "../list/list.h"
+#include "helpers/resource.h"
 
 using intlist = list<int>;
 
@@ -137,4 +138,48 @@ TEST(copyConstructor, shouldsetNelms)
 	intlist list{ 1, 2, 3, 4, 5 };
 	intlist list2 = list;
 	EXPECT_EQ(list.size(), list2.size());
+}
+
+// emplace back
+
+TEST(emplace_back, shouldBeInsertInTheBack)
+{
+	const int newvalue = 4;
+	intlist testlist{ 1,2,3 };
+	testlist.emplace_back(newvalue);
+	EXPECT_EQ(testlist.back(), newvalue);
+}
+
+TEST_F(testResourceList, dontCopyUsingEmplaceBack)
+{
+	listForTesting.emplace_back(100);
+	EXPECT_EQ(testResource::instancesCreated, 1);
+}
+
+TEST_F(testResourceList, updateNelmsUsingEmplaceBack)
+{
+	listForTesting.emplace_back(100);
+	EXPECT_EQ(listForTesting.size(), 1);
+}
+
+// emplace front
+
+TEST(emplace_front, shouldBeInsertInTheFront)
+{
+	const int newvalue = 4;
+	intlist testlist{ 1,2,3 };
+	testlist.emplace_front(newvalue);
+	EXPECT_EQ(testlist.front(), newvalue);
+}
+
+TEST_F(testResourceList, dontCopyUsingEmplaceFront)
+{
+	listForTesting.emplace_front(100);
+	EXPECT_EQ(testResource::instancesCreated, 1);
+}
+
+TEST_F(testResourceList, updateNelmsUsingEmplaceFront)
+{
+	listForTesting.emplace_front(100);
+	EXPECT_EQ(listForTesting.size(), 1);
 }
