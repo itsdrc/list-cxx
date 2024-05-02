@@ -325,4 +325,21 @@ public:
 		return emplace(it, std::move(newvalue));
 	}
 
+	iterator pop(iterator it)
+	{
+		if (empty())
+			throw std::length_error("pop called on empty list");
+
+		node* target = dynamic_cast<node*>(it.linker);
+		link* next = it.linker->next;
+		if (!target)
+			throw std::runtime_error("pop called on head");
+
+		it.linker->previous->next = next;
+		next->previous = it.linker->previous;
+		delete target;
+		--nelms;
+		return next;
+	}
+
 };
