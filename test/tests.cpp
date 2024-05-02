@@ -312,6 +312,15 @@ TEST(iterator, preincrementOperator)
 	EXPECT_EQ(*(++it), 3);
 }
 
+TEST(iterator, postincrementOperator)
+{
+	intlist list{ 1, 2, 3 };
+	auto it = list.begin();
+	EXPECT_EQ(*(it++), 1);
+	EXPECT_EQ(*(it++), 2);
+	EXPECT_EQ(*(it++), 3);
+}
+
 TEST(iterator, predecrementOperator)
 {
 	intlist list{ 1, 2, 3 };
@@ -320,13 +329,14 @@ TEST(iterator, predecrementOperator)
 	EXPECT_EQ(*(--it), 2);
 }
 
-TEST(iterator, postincrementOperator)
+TEST(iterator, postdecrementOperator)
 {
-	intlist list{ 1, 2, 3 };
-	auto it = list.begin();
-	EXPECT_EQ(*(it++), 1);
-	EXPECT_EQ(*(it++), 2);
-	EXPECT_EQ(*(it++), 3);
+	intlist list{ 1,2,3 };
+	auto it = list.end();	
+	it--;
+	EXPECT_EQ(*(it--), 3);
+	EXPECT_EQ(*(it--), 2);
+	EXPECT_EQ(*(it--), 1);
 }
 
 TEST(iterator, shouldThrowExceptionIfTriesToGetHeadValue)
