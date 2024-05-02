@@ -236,7 +236,7 @@ public:
 		link* linker;
 
 	public:
-		friend class List;
+		friend class list;
 		// std::advance setup
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
@@ -301,4 +301,12 @@ public:
 		return &head;
 	}
 
+	iterator insert(iterator it, const T& newvalue)
+	{
+		link* newnode = new node(newvalue, it.linker->previous, it.linker);
+		it.linker->previous->next = newnode;
+		it.linker->previous = newnode;
+		++nelms;
+		return newnode;
+	}
 };
