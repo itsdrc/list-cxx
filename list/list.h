@@ -86,18 +86,9 @@ public:
 		if (this != &list)
 		{
 			clear();
-			try
-			{
-				deepCopy(list);
-			}
-			catch (const std::exception& e)
-			{
-				clear();
-				throw e;
-			}
+			deepCopy(list);
 		}
-		return *this;
-	}
+	}	
 
 	bool operator==(const list& list) const noexcept
 	{
