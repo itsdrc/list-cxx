@@ -398,3 +398,26 @@ TEST(insertUsingIterator, shouldIncrementNelms)
 	list.insert(list.end(), 1);
 	EXPECT_EQ(list.size(), 3);
 }
+
+// iterator emplace 
+
+TEST(emplaceUsingIterator, shouldInsertAtThePositionIndicated)
+{
+	const int newvalue = 100;
+	intlist list{ 1,2,3 };
+	list.emplace(list.begin(), newvalue);
+	EXPECT_EQ(list.front(), newvalue);
+}
+
+TEST_F(testResourceList, emplaceUsingIteratorShouldNotCopy)
+{
+	listForTesting.emplace(listForTesting.end(), testResource());
+	EXPECT_EQ(testResource::instancesCreated, 1);
+}
+
+TEST(emplaceUsingIterator, shouldUpdateNelms)
+{
+	intlist list{ 1,2,3 };
+	list.emplace(list.end(), 10);
+	EXPECT_EQ(list.size(), 4);
+}

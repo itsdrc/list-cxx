@@ -309,4 +309,15 @@ public:
 		++nelms;
 		return newnode;
 	}
+
+	template <typename... Args>
+	iterator emplace(iterator it, Args &&...args)
+	{
+		link* newnode = new node(it.linker->previous, it.linker, std::forward<Args>(args)...);
+		it.linker->previous->next = newnode;
+		it.linker->previous = newnode;
+		++nelms;
+		return newnode;
+	}
+
 };
