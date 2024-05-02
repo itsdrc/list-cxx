@@ -538,3 +538,20 @@ TEST(operatorEquality, shouldReturnFalse)
 	intlist list2{ 1, 2, 3, 4, 5, 6 };
 	EXPECT_FALSE(compareList(list, list2));
 }
+
+// operator = 
+
+TEST(operatorEqual, shouldClearAndAssign)
+{
+	intlist list{ 1, 2, 3 };
+	intlist newlist{ 3, 2, 1 };	
+	newlist = list;
+	EXPECT_TRUE(compareList(newlist, list));
+}
+
+TEST(operatorEqual, dontClearifItsTheSameList)
+{
+	intlist list{ 1, 2, 3 };
+	list = list;
+	EXPECT_TRUE(compareList(list, intlist{ 1, 2, 3 }));
+}
