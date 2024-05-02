@@ -352,16 +352,6 @@ public:
 		return &head;
 	}
 
-	iterator insert(iterator it, const T& newvalue)
-	{
-		link** itlinker = &(it.pimpl.get()->linker);
-		link* newnode = new node(newvalue, (*itlinker)->previous, (*itlinker));
-		(*itlinker)->previous->next = newnode;
-		(*itlinker)->previous = newnode;
-		++nelms;
-		return newnode;
-	}
-
 	template<typename ...Args>
 	iterator emplace(iterator it, Args&& ...args)
 	{
@@ -371,6 +361,11 @@ public:
 		(*itlinker)->previous = newnode;
 		++nelms;
 		return newnode;
+	}
+
+	iterator insert(iterator it, const T& newvalue)
+	{
+		return emplace(it, newvalue);
 	}
 
 	iterator insert(iterator it, T&& newvalue)
