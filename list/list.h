@@ -126,14 +126,6 @@ public:
 		list.nelms = 0;
 	}
 
-	void push_back(const T& newvalue)
-	{
-		node* new_node = new node(newvalue, head.previous, &head);
-		head.previous->next = new_node;
-		head.previous = new_node;
-		++nelms;
-	}
-
 	template <typename... Args>
 	void emplace_back(Args &&...args)
 	{
@@ -141,6 +133,16 @@ public:
 		head.previous->next = new_node;
 		head.previous = new_node;
 		++nelms;
+	}
+
+	void push_back(const T& newvalue)
+	{
+		emplace_back(newvalue);
+	}
+
+	void push_back(T&& newvalue)
+	{
+		emplace_back(std::move(newvalue));
 	}
 
 	template<typename... Args>
@@ -154,15 +156,7 @@ public:
 
 	void push_front(const T& newvalue)
 	{
-		node* new_node = new node(newvalue, &head, head.next);
-		head.next->previous = new_node;
-		head.next = new_node;
-		++nelms;
-	}
-
-	void push_back(T&& newvalue)
-	{
-		emplace_back(std::move(newvalue));
+		emplace_front(newvalue);
 	}
 
 	void push_front(T&& newvalue)
