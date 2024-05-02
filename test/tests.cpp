@@ -558,3 +558,50 @@ TEST(operatorEqual, dontClearifItsTheSameList)
 	list = list;
 	EXPECT_TRUE(compareList(list, intlist{ 1, 2, 3 }));
 }
+
+// const_iterator
+
+TEST(const_iterator, preIncrementOperator)
+{
+	intlist list{ 1,2,3 };
+	auto cit = list.cend();
+	EXPECT_EQ(*(++cit), 1);
+	EXPECT_EQ(*(++cit), 2);
+	EXPECT_EQ(*(++cit), 3);
+}
+
+TEST(const_iterator, postincrementOperator)
+{
+	intlist list{ 1,2,3 };
+	auto cit = list.begin();
+	EXPECT_EQ(*(cit++), 1);
+	EXPECT_EQ(*(cit++), 2);
+	EXPECT_EQ(*(cit++), 3);
+}
+
+TEST(const_iterator, preDecrementIterator)
+{
+	intlist list{ 1,2,3 };
+	auto cit = list.cend();
+	EXPECT_EQ(*(--cit), 3);
+	EXPECT_EQ(*(--cit), 2);
+	EXPECT_EQ(*(--cit), 1);
+}
+
+TEST(const_iterator, postDecrementIterator)
+{
+	intlist list{ 1,2,3 };
+	auto cit = list.cend();
+	cit--;
+	EXPECT_EQ(*(cit--), 3);
+	EXPECT_EQ(*(cit--), 2);
+	EXPECT_EQ(*(cit--), 1);
+}
+
+// const_iterator insert 
+
+// const_iterator emplace
+
+// const_iterator insert by movement
+
+// const_iterator pop
