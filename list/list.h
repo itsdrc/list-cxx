@@ -320,4 +320,9 @@ public:
 		return newnode;
 	}
 
+	iterator insert(iterator it, T&& newvalue)
+	{
+		return emplace(it, std::move(newvalue));
+	}
+
 };
