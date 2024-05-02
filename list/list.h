@@ -88,6 +88,8 @@ public:
 			clear();
 			deepCopy(list);
 		}
+
+		return *this;
 	}	
 
 	bool operator==(const list& list) const noexcept
