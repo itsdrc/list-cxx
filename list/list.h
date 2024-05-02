@@ -79,7 +79,25 @@ public:
 	list(const list& list) : list()
 	{
 		deepCopy(list);
-	}	
+	}
+
+	list& operator=(const list& list)
+	{
+		if (this != &list)
+		{
+			clear();
+			try
+			{
+				deepCopy(list);
+			}
+			catch (const std::exception& e)
+			{
+				clear();
+				throw e;
+			}
+		}
+		return *this;
+	}
 
 	list(list&& list) noexcept
 	{
@@ -210,6 +228,77 @@ public:
 		nelms = 0;
 		head.next = &head;
 		head.previous = &head;
+	}
+
+	class iterator
+	{
+	private:
+		link* linker;
+
+	public:
+		friend class List;
+		// std::advance setup
+		using iterator_category = std::bidirectional_iterator_tag;
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+		using pointer = T*;
+		using reference = T&;
+		iterator() : linker(nullptr) {}
+		iterator(link* linker_) : linker(linker_) {}
+		iterator(const iterator& it) : linker(it.linker) {}
+
+		iterator& operator=(const iterator& it)
+		{
+			if (this != &it)
+				linker = it.linker;
+			return *this;
+		}
+
+		iterator& operator++()
+		{
+			linker = linker->next;
+			return *this;
+		}
+
+		iterator operator++(int)
+		{
+			auto aux = *this;
+			linker = linker->next;
+			return aux;
+		}
+
+		iterator& operator--()
+		{
+			linker = linker->previous;
+			return *this;
+		}
+
+		iterator operator--(int)
+		{
+			auto aux = *this;
+			linker = linker->next;
+			return aux;
+		}
+
+		T& operator*()
+		{
+			if (dynamic_cast<node*>(linker) == nullptr)
+				throw std::runtime_error("Invalid ptr to use '*' ");
+			return static_cast<node*>(linker)->value;
+		}
+
+		bool operator==(iterator it) const noexcept { return linker == it.linker; }
+		bool operator!=(iterator it) const noexcept { return linker != it.linker; }
+	};
+
+	iterator begin()
+	{
+		return head.next;
+	}
+
+	iterator end()
+	{
+		return &head;
 	}
 
 };
