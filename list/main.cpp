@@ -3,19 +3,19 @@
 
 int main()
 {
-	try
-	{
-		list<std::string> mystringlist;
-		mystringlist.push_back("Hello World");
-		mystringlist.push_back("Hello World 2");
-		mystringlist.push_back("Hello World 3");
-		mystringlist.push_back("Hello World 4");
+	try {
 
-		while (!mystringlist.empty())
-		{
-			std::cout << mystringlist.front() << '\n';
-			mystringlist.pop_front();
-		}
+		list<char> charlist;
+		charlist.insert(charlist.end(), 'a');
+		charlist.insert(charlist.end(), 'b');
+		charlist.insert(charlist.end(), 'c');
+		charlist.insert(charlist.end(), 'd');
+		charlist.insert(charlist.end(), 'e');
+		charlist.pop(charlist.begin());
+
+		for (char x : charlist)
+			std::cout << x << ' ';
+
 	}
 	catch (const std::exception& e)
 	{

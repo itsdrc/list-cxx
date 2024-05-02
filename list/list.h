@@ -90,7 +90,7 @@ public:
 		}
 
 		return *this;
-	}	
+	}
 
 	bool operator==(const list& list) const noexcept
 	{
@@ -245,92 +245,130 @@ public:
 		head.previous = &head;
 	}
 
-	class iterator
+	class iteratorImpl
 	{
 	private:
 		link* linker;
 
 	public:
 		friend class list;
-		// std::advance setup
-		using iterator_category = std::bidirectional_iterator_tag;
-		using value_type = T;
-		using difference_type = std::ptrdiff_t;
-		using pointer = T*;
-		using reference = T&;
-		iterator() : linker(nullptr) {}
-		iterator(link* linker_) : linker(linker_) {}
-		iterator(const iterator& it) : linker(it.linker) {}
+		iteratorImpl(link* linker_) : linker(linker_) {}
+		iteratorImpl(const iteratorImpl& itImpl) : linker(itImpl.linker) {}
 
-		iterator& operator=(const iterator& it)
-		{
-			if (this != &it)
-				linker = it.linker;
-			return *this;
-		}
-
-		iterator& operator++()
+		void advance()
 		{
 			linker = linker->next;
-			return *this;
 		}
 
-		iterator operator++(int)
-		{
-			auto aux = *this;
-			linker = linker->next;
-			return aux;
-		}
-
-		iterator& operator--()
+		void goback()
 		{
 			linker = linker->previous;
-			return *this;
 		}
 
-		iterator operator--(int)
-		{
-			auto aux = *this;
-			linker = linker->next;
-			return aux;
-		}
-
-		T& operator*()
+		T& getValue()
 		{
 			if (dynamic_cast<node*>(linker) == nullptr)
 				throw std::runtime_error("Invalid ptr to use '*' ");
 			return static_cast<node*>(linker)->value;
 		}
 
-		bool operator==(iterator it) const noexcept { return linker == it.linker; }
-		bool operator!=(iterator it) const noexcept { return linker != it.linker; }
+		const T& getConstValue()
+		{
+			if (dynamic_cast<node*>(linker) == nullptr)
+				throw std::runtime_error("Invalid ptr to use '*' ");
+			return static_cast<node*>(linker)->value;
+		}
+
+		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }
+		bool operator!=(const iteratorImpl& itImpl) const noexcept { return linker != itImpl.linker; }
 	};
 
-	iterator begin()
+	class iterator
+	{
+	private:
+		std::unique_ptr<iteratorImpl> pimpl;
+
+	public:
+		friend class list;
+		using iterator_category = std::bidirectional_iterator_tag;
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+		using pointer = T*;
+		using reference = T&;
+
+		iterator() : pimpl(nullptr){}
+		iterator(link* linker) : pimpl(std::make_unique<iteratorImpl>(linker)) {}
+		iterator(const iterator& it) : pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
+
+		iterator operator=(const iterator& it)
+		{
+			if (this != &it)
+				pimpl = std::make_unique<iteratorImpl>(*(it.pimpl.get()));
+			return *this;
+		}
+
+		iterator& operator++()
+		{
+			pimpl.get()->advance();
+			return *this;
+		}
+
+		iterator operator++(int)
+		{
+			auto aux = *this;
+			pimpl.get()->advance();
+			return aux;
+		}
+
+		iterator& operator--()
+		{
+			pimpl.get()->goback();
+			return *this;
+		}
+
+		iterator operator--(int)
+		{
+			auto aux = *this;
+			pimpl.get()->goback();
+			return aux;
+		}
+
+		T& operator*()
+		{
+			return pimpl.get()->getValue();
+		}
+
+		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
+		bool operator!=(const iterator& it) const noexcept { return *(pimpl.get()) != *(it.pimpl.get()); }
+	};
+
+	iterator begin() noexcept
 	{
 		return head.next;
 	}
 
-	iterator end()
+	iterator end() noexcept
 	{
 		return &head;
 	}
 
 	iterator insert(iterator it, const T& newvalue)
 	{
-		link* newnode = new node(newvalue, it.linker->previous, it.linker);
-		it.linker->previous->next = newnode;
-		it.linker->previous = newnode;
+		link** itlinker = &(it.pimpl.get()->linker);
+		link* newnode = new node(newvalue, (*itlinker)->previous, (*itlinker));
+		(*itlinker)->previous->next = newnode;
+		(*itlinker)->previous = newnode;
 		++nelms;
 		return newnode;
 	}
 
-	template <typename... Args>
-	iterator emplace(iterator it, Args &&...args)
+	template<typename ...Args>
+	iterator emplace(iterator it, Args&& ...args)
 	{
-		link* newnode = new node(it.linker->previous, it.linker, std::forward<Args>(args)...);
-		it.linker->previous->next = newnode;
-		it.linker->previous = newnode;
+		link** itlinker = &(it.pimpl.get()->linker);
+		link* newnode = new node((*itlinker)->previous, (*itlinker), std::forward<Args>(args)...);
+		(*itlinker)->previous->next = newnode;
+		(*itlinker)->previous = newnode;
 		++nelms;
 		return newnode;
 	}
@@ -344,17 +382,15 @@ public:
 	{
 		if (empty())
 			throw std::length_error("pop called on empty list");
-
-		node* target = dynamic_cast<node*>(it.linker);
-		link* next = it.linker->next;
+		node* target = dynamic_cast<node*>(it.pimpl.get()->linker);
 		if (!target)
 			throw std::runtime_error("pop called on head");
-
-		it.linker->previous->next = next;
-		next->previous = it.linker->previous;
+		link** itlinker = &(it.pimpl.get()->linker);
+		link* next = (*itlinker)->next;
+		(*itlinker)->previous->next = next;
+		next->previous = (*itlinker)->previous;
 		delete target;
 		--nelms;
 		return next;
 	}
-
 };
