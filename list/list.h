@@ -99,6 +99,28 @@ public:
 		return *this;
 	}
 
+	bool operator==(const list& list) const noexcept
+	{
+		link* thislist = head.next;
+		link* arglist = list.head.next;
+
+		if (size() != list.size())
+			return false;
+
+		if (empty() && list.empty())
+			return true;
+
+		while (thislist != &head && arglist != &list.head)
+		{
+			if ((static_cast<node*>(thislist)->value) != (static_cast<node*>(arglist)->value))
+				return false;
+			thislist = thislist->next;
+			arglist = arglist->next;
+		}
+
+		return true;
+	}
+
 	list(list&& list) noexcept
 	{
 		nelms = list.nelms;
