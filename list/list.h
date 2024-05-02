@@ -252,8 +252,15 @@ public:
 
 	public:
 		friend class list;
-		iteratorImpl(link* linker_) : linker(linker_) {}
+		iteratorImpl(link* linker_) : linker(linker_) {}		
 		iteratorImpl(const iteratorImpl& itImpl) : linker(itImpl.linker) {}
+
+		iteratorImpl& operator=(const iteratorImpl& itImpl)
+		{
+			if (this != &itImpl)
+				linker = itImpl.linker;
+			return *this;
+		}
 
 		void advance()
 		{
@@ -266,13 +273,6 @@ public:
 		}
 
 		T& getValue()
-		{
-			if (dynamic_cast<node*>(linker) == nullptr)
-				throw std::runtime_error("Invalid ptr to use '*' ");
-			return static_cast<node*>(linker)->value;
-		}
-
-		const T& getConstValue()
 		{
 			if (dynamic_cast<node*>(linker) == nullptr)
 				throw std::runtime_error("Invalid ptr to use '*' ");
@@ -296,7 +296,7 @@ public:
 		using pointer = T*;
 		using reference = T&;
 
-		iterator() : pimpl(nullptr){}
+		iterator() : pimpl(nullptr) {}
 		iterator(link* linker) : pimpl(std::make_unique<iteratorImpl>(linker)) {}
 		iterator(const iterator& it) : pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
 
@@ -393,4 +393,76 @@ public:
 		--nelms;
 		return next;
 	}
+
+	class const_iterator
+	{
+	private:
+		std::unique_ptr<iteratorImpl> pimpl;
+
+	public:
+		const_iterator() : pimpl(nullptr) {}
+		const_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}
+		const_iterator(const_iterator& cit) : pimpl(std::make_unique<iteratorImpl>(*(cit.pimpl.get()))) {}
+		const_iterator(iterator it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
+
+		const_iterator& operator=(const_iterator& cit)
+		{
+			if (this != &cit)
+				pimpl = std::make_unique<iteratorImpl>(*(cit.pimpl.get()));
+			return *this;
+		}
+
+		const_iterator& operator=(iterator it)
+		{
+			if (this != &it)
+				pimpl = std::make_unique<iteratorImpl>(*(it.pimpl.get()));
+			return *this;
+		}
+
+		const_iterator& operator++()
+		{
+			pimpl.get()->advance();
+			return *this;
+		}
+
+		const_iterator operator++(int)
+		{
+			auto aux = *this;
+			pimpl.get()->advance();
+			return aux;
+		}
+
+		const_iterator& operator--()
+		{
+			pimpl.get()->goback();
+			return *this;
+		}
+
+		const_iterator operator--(int)
+		{
+			auto aux = *this;
+			pimpl.get()->goback();
+			return aux;
+		}
+
+		const T& operator*() const
+		{
+			return pimpl.get()->getValue();
+		}
+
+		bool operator==(const_iterator& cit) noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
+		bool operator!=(const_iterator& cit) noexcept { return *(pimpl.get()) != *(cit.pimpl.get()); }
+		bool operator==(iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
+		bool operator!=(iterator& it) noexcept { return *(pimpl.get()) != *(it.pimpl.get()); }
+	};
+
+	const_iterator cbegin() const noexcept
+	{		
+		return head.next;
+	}
+
+	const_iterator cend() const noexcept
+	{
+		return &head;
+	}		
 };
