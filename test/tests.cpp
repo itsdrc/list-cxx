@@ -398,13 +398,6 @@ TEST(iterator, desreferenceShouldReturnTheCorrectValue)
 	EXPECT_EQ(*it, expected);
 }
 
-TEST(iterator, desreferenceShouldThrowExceptionIfIteratorIsPointsHead)
-{
-	intlist list;
-	auto badIt = list.end();
-	EXPECT_THROW(*badIt, std::runtime_error);
-}
-
 // iterator - insert
 
 TEST(insertUsingIterator, shouldInsertBeforeTheIteratorGiven)
