@@ -96,11 +96,11 @@ private:
 			return static_cast<node*>(linker)->value;
 		}
 
-		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }		
+		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }
 	};
 
 	template<class It>
-	link* popPosition(It it) 
+	link* popPosition(It it)
 	{
 		if (empty())
 			throw std::length_error("pop called on empty list");
@@ -116,7 +116,7 @@ private:
 		return next;
 	}
 
-	template<typename It , typename ...Args>
+	template<typename It, typename ...Args>
 	link* emplaceAt(It it, Args&& ...args)
 	{
 		link** itlinker = &(it.pimpl.get()->linker);
@@ -302,7 +302,7 @@ public:
 		nelms = 0;
 		head.next = &head;
 		head.previous = &head;
-	}	
+	}
 
 	class iterator
 	{
@@ -359,7 +359,7 @@ public:
 			return pimpl.get()->getValue();
 		}
 
-		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
+		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
 	};
 
 	iterator begin() noexcept
@@ -409,16 +409,16 @@ public:
 		const_iterator() : pimpl(nullptr) {}
 		const_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}
 		const_iterator(const const_iterator& cit) : pimpl(std::make_unique<iteratorImpl>(*(cit.pimpl.get()))) {}
-		const_iterator(iterator it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
+		const_iterator(const iterator& it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
 
-		const_iterator& operator=(const_iterator& cit)
+		const_iterator& operator=(const const_iterator& cit)
 		{
 			if (this != &cit)
 				pimpl = std::make_unique<iteratorImpl>(*(cit.pimpl.get()));
 			return *this;
 		}
 
-		const_iterator& operator=(iterator it)
+		const_iterator& operator=(const iterator& it)
 		{
 			if (this != &it)
 				pimpl = std::make_unique<iteratorImpl>(*(it.pimpl.get()));
@@ -456,18 +456,18 @@ public:
 			return pimpl.get()->getValue();
 		}
 
-		bool operator==(const_iterator& cit) noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }		
-		bool operator==(iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
+		bool operator==(const_iterator cit) noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
+		bool operator==(const iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
 	};
 
 	const_iterator cbegin() const noexcept
-	{		
+	{
 		return head.next;
 	}
 
 	const_iterator cend() const noexcept
 	{
 		return &head;
-	}		
-	
+	}
+
 };
