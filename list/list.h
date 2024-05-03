@@ -79,6 +79,17 @@ private:
 		return next;
 	}
 
+	template<typename It , typename ...Args>
+	link* emplaceAt(It it, Args&& ...args)
+	{
+		link** itlinker = &(it.pimpl.get()->linker);
+		link* newnode = new node((*itlinker)->previous, (*itlinker), std::forward<Args>(args)...);
+		(*itlinker)->previous->next = newnode;
+		(*itlinker)->previous = newnode;
+		++nelms;
+		return newnode;
+	}
+
 public:
 	list()
 	{
@@ -366,12 +377,7 @@ public:
 	template<typename ...Args>
 	iterator emplace(iterator it, Args&& ...args)
 	{
-		link** itlinker = &(it.pimpl.get()->linker);
-		link* newnode = new node((*itlinker)->previous, (*itlinker), std::forward<Args>(args)...);
-		(*itlinker)->previous->next = newnode;
-		(*itlinker)->previous = newnode;
-		++nelms;
-		return newnode;
+		return emplaceAt(it, args...);
 	}
 
 	iterator insert(iterator it, const T& newvalue)
