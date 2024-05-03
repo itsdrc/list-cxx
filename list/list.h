@@ -456,7 +456,7 @@ public:
 			return pimpl.get()->getValue();
 		}
 
-		bool operator==(const_iterator cit) noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
+		bool operator==(const const_iterator cit) noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
 		bool operator==(const iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
 	};
 
