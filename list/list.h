@@ -362,12 +362,12 @@ public:
 		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
 	};
 
-	iterator begin() noexcept
+	[[nodiscard]] iterator begin() noexcept
 	{
 		return head.next;
 	}
 
-	iterator end() noexcept
+	[[nodiscard]] iterator end() noexcept
 	{
 		return &head;
 	}
@@ -460,14 +460,13 @@ public:
 		bool operator==(const iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
 	};
 
-	const_iterator cbegin() const noexcept
+	[[nodiscard]] const_iterator cbegin() const noexcept
 	{
 		return head.next;
 	}
 
-	const_iterator cend() const noexcept
+	[[nodiscard]] const_iterator cend() const noexcept
 	{
 		return &head;
-	}
-
+	} 
 };
