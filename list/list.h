@@ -60,6 +60,23 @@ private:
 			push_back(next->value);
 			aux = aux->next;
 		}
+	}	
+
+	template<class It>
+	link* popPosition(It it) 
+	{
+		if (empty())
+			throw std::length_error("pop called on empty list");
+		node* target = dynamic_cast<node*>(it.pimpl.get()->linker);
+		if (!target)
+			throw std::runtime_error("pop called on head");
+		link** itlinker = &(it.pimpl.get()->linker);
+		link* next = (*itlinker)->next;
+		(*itlinker)->previous->next = next;
+		next->previous = (*itlinker)->previous;
+		delete target;
+		--nelms;
+		return next;
 	}
 
 public:
@@ -369,18 +386,7 @@ public:
 
 	iterator pop(iterator it)
 	{
-		if (empty())
-			throw std::length_error("pop called on empty list");
-		node* target = dynamic_cast<node*>(it.pimpl.get()->linker);
-		if (!target)
-			throw std::runtime_error("pop called on head");
-		link** itlinker = &(it.pimpl.get()->linker);
-		link* next = (*itlinker)->next;
-		(*itlinker)->previous->next = next;
-		next->previous = (*itlinker)->previous;
-		delete target;
-		--nelms;
-		return next;
+		return popPosition<iterator>(it);
 	}
 
 	class const_iterator
