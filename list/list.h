@@ -96,8 +96,7 @@ private:
 			return static_cast<node*>(linker)->value;
 		}
 
-		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }
-		bool operator!=(const iteratorImpl& itImpl) const noexcept { return linker != itImpl.linker; }
+		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }		
 	};
 
 	template<class It>
@@ -360,8 +359,7 @@ public:
 			return pimpl.get()->getValue();
 		}
 
-		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
-		bool operator!=(const iterator& it) const noexcept { return *(pimpl.get()) != *(it.pimpl.get()); }
+		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
 	};
 
 	iterator begin() noexcept
@@ -457,10 +455,8 @@ public:
 			return pimpl.get()->getValue();
 		}
 
-		bool operator==(const_iterator& cit) noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
-		bool operator!=(const_iterator& cit) noexcept { return *(pimpl.get()) != *(cit.pimpl.get()); }
-		bool operator==(iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
-		bool operator!=(iterator& it) noexcept { return *(pimpl.get()) != *(it.pimpl.get()); }
+		bool operator==(const_iterator& cit) noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }		
+		bool operator==(iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
 	};
 
 	const_iterator cbegin() const noexcept
