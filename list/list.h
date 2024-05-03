@@ -399,6 +399,7 @@ public:
 		std::unique_ptr<iteratorImpl> pimpl;
 
 	public:
+		friend class list;
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
@@ -407,7 +408,7 @@ public:
 
 		const_iterator() : pimpl(nullptr) {}
 		const_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}
-		const_iterator(const_iterator& cit) : pimpl(std::make_unique<iteratorImpl>(*(cit.pimpl.get()))) {}
+		const_iterator(const const_iterator& cit) : pimpl(std::make_unique<iteratorImpl>(*(cit.pimpl.get()))) {}
 		const_iterator(iterator it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
 
 		const_iterator& operator=(const_iterator& cit)
@@ -468,4 +469,5 @@ public:
 	{
 		return &head;
 	}		
+	
 };
