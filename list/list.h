@@ -60,7 +60,45 @@ private:
 			push_back(next->value);
 			aux = aux->next;
 		}
-	}	
+	}
+
+	class iteratorImpl
+	{
+	private:
+		link* linker;
+
+	public:
+		friend class list;
+		iteratorImpl(link* linker_) : linker(linker_) {}
+		iteratorImpl(const iteratorImpl& itImpl) : linker(itImpl.linker) {}
+
+		iteratorImpl& operator=(const iteratorImpl& itImpl)
+		{
+			if (this != &itImpl)
+				linker = itImpl.linker;
+			return *this;
+		}
+
+		void advance()
+		{
+			linker = linker->next;
+		}
+
+		void goback()
+		{
+			linker = linker->previous;
+		}
+
+		T& getValue()
+		{
+			if (dynamic_cast<node*>(linker) == nullptr)
+				throw std::runtime_error("Invalid ptr to use '*' ");
+			return static_cast<node*>(linker)->value;
+		}
+
+		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }
+		bool operator!=(const iteratorImpl& itImpl) const noexcept { return linker != itImpl.linker; }
+	};
 
 	template<class It>
 	link* popPosition(It it) 
@@ -265,45 +303,7 @@ public:
 		nelms = 0;
 		head.next = &head;
 		head.previous = &head;
-	}
-
-	class iteratorImpl
-	{
-	private:
-		link* linker;
-
-	public:
-		friend class list;
-		iteratorImpl(link* linker_) : linker(linker_) {}		
-		iteratorImpl(const iteratorImpl& itImpl) : linker(itImpl.linker) {}
-
-		iteratorImpl& operator=(const iteratorImpl& itImpl)
-		{
-			if (this != &itImpl)
-				linker = itImpl.linker;
-			return *this;
-		}
-
-		void advance()
-		{
-			linker = linker->next;
-		}
-
-		void goback()
-		{
-			linker = linker->previous;
-		}
-
-		T& getValue()
-		{
-			if (dynamic_cast<node*>(linker) == nullptr)
-				throw std::runtime_error("Invalid ptr to use '*' ");
-			return static_cast<node*>(linker)->value;
-		}
-
-		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }
-		bool operator!=(const iteratorImpl& itImpl) const noexcept { return linker != itImpl.linker; }
-	};
+	}	
 
 	class iterator
 	{
