@@ -251,12 +251,12 @@ public:
 		--nelms;
 	}
 
-	std::size_t size() const noexcept
+	[[nodiscard]] std::size_t size() const noexcept
 	{
 		return nelms;
 	}
 
-	bool empty() const noexcept
+	[[nodiscard]] bool empty() const noexcept
 	{
 		return nelms == 0;
 	}
