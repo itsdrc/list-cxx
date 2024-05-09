@@ -476,7 +476,6 @@ TEST(insertUsingIteratorByMovement, shouldUpdateNelms)
 
 // iterator pop
 
-
 TEST(popUsingIterator, shouldDeleteTheElementAtIterator)
 {
 	intlist list{ 1, 2, 3 };
@@ -673,11 +672,3 @@ TEST(const_iterator, equalityOperatorWithIterator)
 	auto constIterator = list.cbegin();
 	EXPECT_TRUE(normalIterator == constIterator);
 }
-
-// const_iterator insert 
-
-// const_iterator emplace
-
-// const_iterator insert by movement
-
-// const_iterator pop

@@ -372,25 +372,28 @@ public:
 		return &head;
 	}
 
-	template<typename ...Args>
-	iterator emplace(iterator it, Args&& ...args)
+	template<typename It, typename ...Args>
+	It emplace(It it, Args&& ... args)
 	{
-		return emplaceAt(it, args...);
+		return emplaceAt<It>(it, std::forward<Args>(args)...);
 	}
 
-	iterator insert(iterator it, const T& newvalue)
+	template<typename It>
+	It pop(It it)
 	{
-		return emplace(it, newvalue);
+		return popPosition<It>(it);
 	}
 
-	iterator insert(iterator it, T&& newvalue)
+	template<typename It>
+	It insert(It it, const T& newvalue)
 	{
-		return emplace(it, std::move(newvalue));
-	}
+		return emplace<It>(it, newvalue);
+	}	
 
-	iterator pop(iterator it)
+	template<typename It>
+	It insert(It it, T&& newvalue)
 	{
-		return popPosition<iterator>(it);
+		return emplace<It>(it, std::move(newvalue));
 	}
 
 	class const_iterator
