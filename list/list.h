@@ -483,8 +483,8 @@ public:
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
-		using pointer = const T*;
-		using reference = const T&;
+		using pointer = T*;
+		using reference = T&;
 
 		reverse_iterator() : pimpl(nullptr) {}
 		reverse_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}		
