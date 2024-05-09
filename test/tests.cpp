@@ -617,6 +617,19 @@ TEST(operatorEqual, dontClearifItsTheSameList)
 
 // const_iterator
 
+TEST(const_iterator, cbeginShouldReturnIteratorToBegin)
+{
+	const int begin = 1;
+	intlist list{ begin,2,3 };
+	EXPECT_EQ(*(list.cbegin()), begin);
+}
+
+TEST(const_iterator, cendShouldReturnIteratorToEnd)
+{	
+	intlist list{ 1,2,3 };
+	EXPECT_ANY_THROW(*(list.cend()));
+}
+
 TEST(const_iterator, preIncrementOperator)
 {
 	intlist list{ 1,2,3 };
@@ -729,3 +742,4 @@ TEST(const_iterator, equalityOperatorWithIterator)
 	auto constIterator = list.cbegin();
 	EXPECT_TRUE(normalIterator == constIterator);
 }
+
