@@ -531,7 +531,7 @@ public:
 			return aux;
 		}
 
-		const T& operator*() const
+		T& operator*() const
 		{
 			return pimpl.get()->getValue();
 		}
