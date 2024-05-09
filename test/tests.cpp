@@ -30,6 +30,14 @@ namespace
 	}
 }
 
+// initializer list
+
+TEST(initializerListConstructor, shouldConstructTheList)
+{
+	intlist list{ 1, 2, 3, 4, 5 };
+	EXPECT_EQ(list.size(), 5);
+}
+
 // front
 
 TEST(front, shouldReturnTheFront)
@@ -48,6 +56,19 @@ TEST(front, shouldThrowLengthError)
 	EXPECT_THROW(emptylist.front(), std::length_error);
 }
 
+TEST(front_constlist, shouldReturnTheFront)
+{
+	const int front = 10;
+	const intlist list{ front,2,3 };
+	EXPECT_EQ(list.front(), front);
+}
+
+TEST(front_constlist, shouldThrowLengthError)
+{
+	const intlist emptylist;
+	EXPECT_THROW(emptylist.front(), std::length_error);
+}
+
 // back
 
 TEST(front, shoudlReturnTheBack)
@@ -63,6 +84,19 @@ TEST(front, shoudlReturnTheBack)
 TEST(back, shouldThrowLengthError)
 {
 	intlist emptylist;
+	EXPECT_THROW(emptylist.back(), std::length_error);
+}
+
+TEST(back_constlist, shouldReturnTheBack)
+{
+	const int back = 10;
+	const intlist list{ 1,2,back };
+	EXPECT_EQ(list.back(), back);
+}
+
+TEST(back_constlist, shouldThrowLengthError)
+{
+	const intlist emptylist;
 	EXPECT_THROW(emptylist.back(), std::length_error);
 }
 
@@ -100,8 +134,7 @@ TEST(empty, shouldReturnTrueIfListEmpty)
 
 // pop back
 
-
-TEST(pop_back, shouldPoptheback)
+TEST(pop_back, shouldPoptheBack)
 {
 	intlist list;
 	list.push_back(1);
@@ -117,6 +150,14 @@ TEST(pop_back, ifListEmptyShouldThrowException)
 {
 	intlist emptylist;
 	EXPECT_THROW(emptylist.pop_back(), std::length_error);
+}
+
+TEST(pop_back, shouldChangeSize)
+{
+	intlist list{ 1,2,3 };
+	const int currentSize = list.size();
+	list.pop_back();
+	EXPECT_EQ(list.size(), currentSize-1);
 }
 
 // pop front
@@ -138,12 +179,12 @@ TEST(pop_front, ifListEmptyShouldThrowException)
 	EXPECT_THROW(emptylist.pop_front(), std::length_error);
 }
 
-// initializer list
-
-TEST(initializerListConstructor, shouldConstructTheList)
+TEST(pop_front, shouldChangeSize)
 {
-	intlist list{ 1, 2, 3, 4, 5 };
-	EXPECT_EQ(list.size(), 5);
+	intlist list{ 1,2,3 };
+	const int currentSize = list.size();
+	list.pop_front();
+	EXPECT_EQ(list.size(),currentSize-1);
 }
 
 // copy constructor
@@ -168,7 +209,7 @@ TEST(copyConstructor, shouldsetNelms)
 
 // emplace back
 
-TEST(emplace_back, shouldBeInsertInTheBack)
+TEST(emplace_back, shouldInsertInTheBack)
 {
 	const int newvalue = 4;
 	intlist testlist{ 1,2,3 };
@@ -190,7 +231,7 @@ TEST_F(testResourceList, updateNelmsUsingEmplaceBack)
 
 // emplace front
 
-TEST(emplace_front, shouldBeInsertInTheFront)
+TEST(emplace_front, shouldInsertInTheFront)
 {
 	const int newvalue = 4;
 	intlist testlist{ 1,2,3 };
@@ -212,12 +253,22 @@ TEST_F(testResourceList, updateNelmsUsingEmplaceFront)
 
 // constructor by movement 
 
+TEST(constructorByMovement, shouldUpdateNelms)
+{
+	intlist list{ 1,2,3 };
+	intlist list2 = std::move(list);
+	EXPECT_EQ(list.size(), 0);
+	EXPECT_EQ(list2.size(), 3);
+}
+
 TEST_F(testResourceList, constructorByMovementshouldNotMakeCopies)
 {
 	listForTesting.emplace_back(testResource());
 	listForTesting.emplace_back(testResource());
 	listForTesting.emplace_back(testResource());
+
 	list<testResource> resourceList = std::move(listForTesting);
+
 	EXPECT_EQ(testResource::copyConstructor, 0);
 }
 
@@ -257,8 +308,6 @@ TEST(destructor_clear, canPushAfterClearWithNoProblem)
 	ASSERT_EQ(list.front(), 1);
 	ASSERT_EQ(list.back(), 3);
 }
-
-
 
 // push back &&
 
@@ -300,6 +349,14 @@ TEST_F(testResourceList, pushFrontDontCopyUsingStdMove)
 	testResource resource;
 	listForTesting.push_front(std::move(resource));
 	EXPECT_EQ(testResource::instancesCreated, 1);
+}
+
+TEST(testResourceList, updateNelmsUsingPushFrontByMovement)
+{
+	intlist list{ 1,2,3 };
+	const int currentsize = list.size();
+	list.push_front(std::move(1));
+	EXPECT_EQ(list.size(), currentsize);
 }
 
 // iterator class
@@ -398,7 +455,7 @@ TEST(iterator, desreferenceShouldReturnTheCorrectValue)
 	EXPECT_EQ(*it, expected);
 }
 
-// iterator - insert
+// iterators - insert
 
 TEST(insertUsingIterator, shouldInsertBeforeTheIteratorGiven)
 {
@@ -428,9 +485,9 @@ TEST(insertUsingIterator, shouldIncrementNelms)
 	EXPECT_EQ(list.size(), 3);
 }
 
-// iterator emplace 
+// iterators emplace 
 
-TEST(emplaceUsingIterator, shouldInsertAtThePositionIndicated)
+TEST(emplaceUsingIterator, shouldInsertBeforeTheIteratorGiven)
 {
 	const int newvalue = 100;
 	intlist list{ 1,2,3 };
@@ -453,7 +510,7 @@ TEST(emplaceUsingIterator, shouldUpdateNelms)
 
 // iterator by movement 
 
-TEST(insertUsingIteratorByMovement, shouldInsertAtThePositionIndicated)
+TEST(insertUsingIteratorByMovement, shouldInsertBeforeTheIteratorGiven)
 {
 	int newvalue = 100;
 	intlist list{ 1,2,3 };
