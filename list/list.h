@@ -3,6 +3,15 @@
 #include<iostream>
 #include<utility>
 
+template<typename List, typename It>
+struct is_valid_iterator {
+	static constexpr bool iteratorConcept = 
+		std::same_as<It, typename List::iterator>
+		|| std::same_as<It, typename List::const_iterator>
+		|| std::same_as<It, typename List::reverse_iterator>
+		|| std::same_as<It, typename List::const_reverse_iterator>;
+};
+
 template<class T>
 class list
 {
@@ -127,7 +136,8 @@ private:
 		return newnode;
 	}
 
-public:
+public:	
+
 	list()
 	{
 		head.next = &head;
@@ -370,30 +380,6 @@ public:
 	[[nodiscard]] iterator end() noexcept
 	{
 		return &head;
-	}
-
-	template<typename It, typename ...Args>
-	It emplace(It it, Args&& ... args)
-	{
-		return emplaceAt<It>(it, std::forward<Args>(args)...);
-	}
-
-	template<typename It>
-	It pop(It it)
-	{
-		return popPosition<It>(it);
-	}
-
-	template<typename It>
-	It insert(It it, const T& newvalue)
-	{
-		return emplace<It>(it, newvalue);
-	}	
-
-	template<typename It>
-	It insert(It it, T&& newvalue)
-	{
-		return emplace<It>(it, std::move(newvalue));
 	}
 
 	class const_iterator
@@ -647,5 +633,31 @@ public:
 		return &head;
 	}
 
+	template<typename It, typename ...Args>
+		requires is_valid_iterator<list, It>::iteratorConcept
+	It emplace(It it, Args&& ... args)
+	{
+		return emplaceAt<It>(it, std::forward<Args>(args)...);
+	}
 
+	template<typename It>
+		requires is_valid_iterator<list, It>::iteratorConcept
+	It pop(It it)
+	{
+		return popPosition<It>(it);
+	}
+
+	template<typename It>
+		requires is_valid_iterator<list, It>::iteratorConcept
+	It insert(It it, const T& newvalue)
+	{
+		return emplace<It>(it, newvalue);
+	}
+
+	template<typename It>
+		requires is_valid_iterator<list, It>::iteratorConcept
+	It insert(It it, T&& newvalue)
+	{
+		return emplace<It>(it, std::move(newvalue));
+	}
 };
