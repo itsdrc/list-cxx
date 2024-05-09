@@ -155,7 +155,7 @@ TEST(pop_back, ifListEmptyShouldThrowException)
 TEST(pop_back, shouldChangeSize)
 {
 	intlist list{ 1,2,3 };
-	const int currentSize = list.size();
+	const auto currentSize = list.size();
 	list.pop_back();
 	EXPECT_EQ(list.size(), currentSize-1);
 }
@@ -182,7 +182,7 @@ TEST(pop_front, ifListEmptyShouldThrowException)
 TEST(pop_front, shouldChangeSize)
 {
 	intlist list{ 1,2,3 };
-	const int currentSize = list.size();
+	const auto currentSize = list.size();
 	list.pop_front();
 	EXPECT_EQ(list.size(),currentSize-1);
 }
@@ -351,12 +351,12 @@ TEST_F(testResourceList, pushFrontDontCopyUsingStdMove)
 	EXPECT_EQ(testResource::instancesCreated, 1);
 }
 
-TEST(testResourceList, updateNelmsUsingPushFrontByMovement)
+TEST_F(testResourceList, updateNelmsUsingPushFrontByMovement)
 {
 	intlist list{ 1,2,3 };
-	const int currentsize = list.size();
+	const auto currentsize = list.size();
 	list.push_front(std::move(1));
-	EXPECT_EQ(list.size(), currentsize);
+	EXPECT_EQ(list.size(), currentsize+1);
 }
 
 // iterator class
