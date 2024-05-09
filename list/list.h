@@ -459,8 +459,8 @@ public:
 			return pimpl.get()->getValue();
 		}
 
-		bool operator==(const const_iterator cit) noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
-		bool operator==(const iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
+		bool operator==(const const_iterator cit) const noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
+		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
 	};
 
 	[[nodiscard]] const_iterator cbegin() const noexcept
@@ -536,9 +536,9 @@ public:
 			return pimpl.get()->getValue();
 		}
 
-		bool operator==(const reverse_iterator revit) noexcept { return *(pimpl.get()) == *(revit.pimpl.get()); }
-		bool operator==(const iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
-		bool operator==(const const_iterator& cit) noexcept {return  *(pimpl.get()) == *(cit.pimpl.get());}
+		bool operator==(const reverse_iterator revit) const noexcept { return *(pimpl.get()) == *(revit.pimpl.get()); }
+		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
+		bool operator==(const const_iterator& cit) const noexcept {return  *(pimpl.get()) == *(cit.pimpl.get());}
 	};
 
 	[[nodiscard]] reverse_iterator rbegin() const noexcept
