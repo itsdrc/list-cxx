@@ -471,5 +471,84 @@ public:
 	[[nodiscard]] const_iterator cend() const noexcept
 	{
 		return &head;
-	} 
+	} 	
+
+	class reverse_iterator
+	{
+	private:
+		std::unique_ptr<iteratorImpl> pimpl;
+
+	public:
+		friend class list;
+		using iterator_category = std::bidirectional_iterator_tag;
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+		using pointer = const T*;
+		using reference = const T&;
+
+		reverse_iterator() : pimpl(nullptr) {}
+		reverse_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}		
+		reverse_iterator(const iterator& it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
+		reverse_iterator(const reverse_iterator& revit): pimpl(std::make_unique<iteratorImpl>(*(revit.pimpl.get()))) {}
+
+		reverse_iterator& operator=(const reverse_iterator& revit)
+		{
+			if (this != &revit)
+				pimpl = std::make_unique<iteratorImpl>(*(revit.pimpl.get()));
+			return *this;
+		}
+
+		reverse_iterator& operator=(const iterator& it)
+		{
+			if (this != &it)
+				pimpl = std::make_unique<iteratorImpl>(*(it.pimpl.get()));
+			return *this;
+		}
+
+		reverse_iterator& operator++()
+		{
+			pimpl.get()->goback();
+			return *this;
+		}
+
+		reverse_iterator operator++(int)
+		{
+			auto aux = *this;
+			pimpl.get()->goback();
+			return aux;
+		}
+
+		reverse_iterator& operator--()
+		{
+			pimpl.get()->advance();
+			return *this;
+		}
+
+		reverse_iterator operator--(int)
+		{
+			auto aux = *this;
+			pimpl.get()->advance();
+			return aux;
+		}
+
+		const T& operator*() const
+		{
+			return pimpl.get()->getValue();
+		}
+
+		bool operator==(const reverse_iterator revit) noexcept { return *(pimpl.get()) == *(revit.pimpl.get()); }
+		bool operator==(const iterator& it) noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
+		bool operator==(const const_iterator& cit) noexcept {return  *(pimpl.get()) == *(cit.pimpl.get());}
+	};
+
+	[[nodiscard]] reverse_iterator rbegin() const noexcept
+	{
+		return head.previous;
+	}
+
+	[[nodiscard]] reverse_iterator rend() const noexcept
+	{
+		return &head;
+	}
+
 };
