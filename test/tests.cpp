@@ -361,6 +361,19 @@ TEST_F(testResourceList, updateNelmsUsingPushFrontByMovement)
 
 // iterator class
 
+TEST(iterator, beginShouldReturnIteratorToBegin)
+{
+	const int begin = 1;
+	intlist list{ begin,2,3 };
+	EXPECT_EQ(*(list.begin()), begin);
+}
+
+TEST(iterator, endShouldReturnIteratorToEnd)
+{	
+	intlist list{ 1,2,3 };
+	EXPECT_ANY_THROW(*(list.end()));
+}
+
 TEST(iterator, preincrementOperator)
 {
 	intlist list{ 1, 2, 3 };
