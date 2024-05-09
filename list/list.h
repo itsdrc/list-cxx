@@ -551,4 +551,101 @@ public:
 		return &head;
 	}
 
+
+	class const_reverse_iterator
+	{
+	private:
+		std::unique_ptr<iteratorImpl> pimpl;
+
+	public:
+		friend class list;
+		using iterator_category = std::bidirectional_iterator_tag;
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+		using pointer = const T*;
+		using reference = const T&;
+
+		const_reverse_iterator() : pimpl(nullptr) {}
+		const_reverse_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}
+		const_reverse_iterator(const iterator& it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
+		const_reverse_iterator(const const_iterator& cit) :pimpl(std::make_unique<iteratorImpl>(*(cit.pimpl.get()))) {}
+		const_reverse_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iteratorImpl>(*(revit.pimpl.get()))) {}
+		const_reverse_iterator(const const_reverse_iterator& crevit) : pimpl(std::make_unique<iteratorImpl>(*(crevit.pimpl.get()))) {}
+
+		const_reverse_iterator& operator=(const const_reverse_iterator& crevit)
+		{
+			if (this != &crevit)
+				pimpl = std::make_unique<iteratorImpl>(*(crevit.pimpl.get()));
+			return *this;
+		}
+
+		const_reverse_iterator& operator=(const reverse_iterator& revit)
+		{
+			if (this != &revit)
+				pimpl = std::make_unique<iteratorImpl>(*(revit.pimpl.get()));
+			return *this;
+		}
+
+		const_reverse_iterator& operator=(const const_iterator& cit)
+		{
+			if (this != &cit)
+				pimpl = std::make_unique<iteratorImpl>(*(cit.pimpl.get()));
+			return *this;
+		}
+
+		const_reverse_iterator& operator=(const iterator& it)
+		{
+			if (this != &it)
+				pimpl = std::make_unique<iteratorImpl>(*(it.pimpl.get()));
+			return *this;
+		}
+
+		const_reverse_iterator& operator++()
+		{
+			pimpl.get()->goback();
+			return *this;
+		}
+
+		const_reverse_iterator operator++(int)
+		{
+			auto aux = *this;
+			pimpl.get()->goback();
+			return aux;
+		}
+
+		const_reverse_iterator& operator--()
+		{
+			pimpl.get()->advance();
+			return *this;
+		}
+
+		const_reverse_iterator operator--(int)
+		{
+			auto aux = *this;
+			pimpl.get()->advance();
+			return aux;
+		}
+
+		const T& operator*() const
+		{
+			return pimpl.get()->getValue();
+		}
+
+		bool operator==(const const_reverse_iterator& crevit) const noexcept { return *(pimpl.get()) == *(crevit.pimpl.get()); }
+		bool operator==(const reverse_iterator& revit) const noexcept { return *(pimpl.get()) == *(revit.pimpl.get()); }
+		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
+		bool operator==(const const_iterator& cit) const noexcept { return  *(pimpl.get()) == *(cit.pimpl.get()); }
+	};
+
+	[[nodiscard]] const_reverse_iterator crbegin() const noexcept
+	{
+		return head.previous;
+	}
+
+	[[nodiscard]] const_reverse_iterator crend() const noexcept
+	{
+		return &head;
+	}
+
+
 };
