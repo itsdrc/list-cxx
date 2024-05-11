@@ -5,7 +5,7 @@
 
 template<typename List, typename It>
 struct is_valid_iterator {
-	static constexpr bool iteratorConcept = 
+	static constexpr bool iteratorConcept =
 		std::same_as<It, typename List::iterator>
 		|| std::same_as<It, typename List::const_iterator>
 		|| std::same_as<It, typename List::reverse_iterator>
@@ -136,7 +136,7 @@ private:
 		return newnode;
 	}
 
-public:	
+public:
 
 	list()
 	{
@@ -446,7 +446,7 @@ public:
 		}
 
 		bool operator==(const const_iterator cit) const noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
-		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }		
+		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
 	};
 
 	[[nodiscard]] const_iterator cbegin() const noexcept
@@ -457,7 +457,7 @@ public:
 	[[nodiscard]] const_iterator cend() const noexcept
 	{
 		return &head;
-	} 	
+	}
 
 	class reverse_iterator
 	{
@@ -473,9 +473,9 @@ public:
 		using reference = T&;
 
 		reverse_iterator() : pimpl(nullptr) {}
-		reverse_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}		
+		reverse_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}
 		reverse_iterator(const iterator& it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
-		reverse_iterator(const reverse_iterator& revit): pimpl(std::make_unique<iteratorImpl>(*(revit.pimpl.get()))) {}
+		reverse_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iteratorImpl>(*(revit.pimpl.get()))) {}
 
 		reverse_iterator& operator=(const reverse_iterator& revit)
 		{
@@ -524,7 +524,7 @@ public:
 
 		bool operator==(const reverse_iterator revit) const noexcept { return *(pimpl.get()) == *(revit.pimpl.get()); }
 		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
-		bool operator==(const const_iterator& cit) const noexcept {return  *(pimpl.get()) == *(cit.pimpl.get());}
+		bool operator==(const const_iterator& cit) const noexcept { return  *(pimpl.get()) == *(cit.pimpl.get()); }
 	};
 
 	[[nodiscard]] reverse_iterator rbegin() const noexcept
@@ -659,5 +659,23 @@ public:
 	It insert(It it, T&& newvalue)
 	{
 		return emplace<It>(it, std::move(newvalue));
+	}
+
+	template<class Condition>
+	std::size_t remove_if(Condition condition)
+	{
+		std::size_t totalRemoved = 0;
+		auto it = cbegin();
+
+		while (it != cend())
+			if (condition(*it))
+			{
+				it = pop(it);
+				++totalRemoved;
+			}
+			else
+				++it;
+
+		return totalRemoved;
 	}
 };
