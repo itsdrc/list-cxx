@@ -6,13 +6,13 @@ using intlist = list<int>;
 
 namespace
 {
-	testing::AssertionResult compareList(intlist list, intlist list2)
+	testing::AssertionResult compareList(const intlist& list, const intlist& list2)
 	{
 		if (list == list2)
 			return testing::AssertionSuccess();
 		else
 		{
-			auto fillStringWithList = [](std::string& str, intlist target)
+			auto fillStringWithList = [](std::string& str, const intlist& target)
 				{
 					for (int e : target)
 						str.append(std::to_string(e) + " ");
@@ -1046,6 +1046,25 @@ TEST(const_reverse_iterator, equalityOperatorWithReverseIterator)
 	intlist::const_reverse_iterator crevit = list.crbegin();
 	intlist::reverse_iterator revit = list.rbegin();
 	EXPECT_TRUE(crevit == revit);
+}
+
+// for each 
+
+TEST(for_each, shouldforEachSuccefully)
+{
+	intlist list{ 1,2,3 };
+	for (int& i : list)
+		i = 0;
+	EXPECT_TRUE(compareList(list, intlist({ 0,0,0 })));
+}
+
+TEST(for_each, shouldForEachOnConstList)
+{	
+	const intlist list{ 1,2,3 };
+	intlist aux;
+	for (int i : list)
+		aux.push_back(i);
+	EXPECT_TRUE(compareList(aux, list));
 }
 
 // remove if
