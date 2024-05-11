@@ -459,6 +459,17 @@ public:
 		return &head;
 	}
 
+	[[nodiscard]] const_iterator begin() const noexcept
+	{
+		return head.next;
+	}
+
+	[[nodiscard]] const_iterator end() const noexcept
+	{
+		return &head;
+	}
+
+
 	class reverse_iterator
 	{
 	private:
