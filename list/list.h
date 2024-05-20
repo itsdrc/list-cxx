@@ -138,6 +138,20 @@ private:
 
 public:
 
+	class iterator;
+	class const_iterator;
+
+	template<class NoReverseIT>
+		requires std::same_as<NoReverseIT, iterator> || std::same_as<NoReverseIT, const_iterator>
+	list(NoReverseIT begin, NoReverseIT end) : list()
+	{
+		while (begin != end)
+		{
+			push_back(*begin);
+			++begin;
+		}
+	}
+
 	list()
 	{
 		head.next = &head;
