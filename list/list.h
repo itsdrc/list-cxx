@@ -703,4 +703,23 @@ public:
 
 		return totalRemoved;
 	}
+
+	template<typename It>
+		requires is_valid_iterator<list,It>::iteratorConcept
+	void splice(It where, list& rightlist)
+	{
+		link* lnk = where.pimpl.get()->linker;
+		link* nextE = lnk->next;
+
+		lnk->next = rightlist.head.next;
+		rightlist.head.next->previous = lnk;
+
+		nextE->previous = rightlist.head.previous;
+		rightlist.head.previous->next = nextE;
+
+		nelms += rightlist.size();
+		rightlist.head.next = &rightlist.head;
+		rightlist.head.previous= &rightlist.head;
+		rightlist.nelms = 0;
+	}	
 };
