@@ -2,6 +2,7 @@
 
 #include<iostream>
 #include<utility>
+#include<functional>
 
 template<typename List, typename It>
 struct is_valid_iterator {
@@ -134,6 +135,60 @@ private:
 		(*itlinker)->previous = newnode;
 		++nelms;
 		return newnode;
+	}
+
+	void swapElements(link* first, link* second)
+	{
+		if (first == second)
+			return;
+
+		if (first == &head || second == &head)
+			throw std::invalid_argument("You cant swap head");
+
+		link* beforeFirst = first->previous;
+		link* afterFirst = first->next;
+
+		link* beforeSecond = second->previous;
+		link* afterSecond = second->next;
+
+		if (first->next == second)
+		{
+			beforeFirst->next = second;
+			second->previous = beforeFirst;
+
+			second->next = first;
+			first->previous = second;
+
+			first->next = afterSecond;
+			afterSecond->previous = first;
+
+			return;
+		}
+
+		if (second->next == first)
+		{
+			beforeSecond->next = first;
+			first->previous = beforeSecond;
+
+			first->next = second;
+			second->previous = first;
+
+			afterFirst->previous = second;
+			second->next = afterFirst;
+
+			return;
+		}
+
+		beforeFirst->next = second;
+		afterFirst->previous = second;
+		second->next = afterFirst;
+		second->previous = beforeFirst;
+
+		beforeSecond->next = first;
+		afterSecond->previous = first;
+
+		first->next = afterSecond;
+		first->previous = beforeSecond;
 	}
 
 public:
@@ -705,7 +760,7 @@ public:
 	}
 
 	template<typename It>
-		requires is_valid_iterator<list,It>::iteratorConcept
+		requires is_valid_iterator<list, It>::iteratorConcept
 	void splice(It where, list& rightlist)
 	{
 		link* lnk = where.pimpl.get()->linker;
@@ -719,7 +774,62 @@ public:
 
 		nelms += rightlist.size();
 		rightlist.head.next = &rightlist.head;
-		rightlist.head.previous= &rightlist.head;
+		rightlist.head.previous = &rightlist.head;
 		rightlist.nelms = 0;
-	}	
+	}
+
+	void sort()
+	{
+		if (empty() || nelms == 1)
+			return;
+
+		auto getLinkerAt = [&](std::size_t pos)-> link*
+			{
+				const_iterator it = cbegin();
+				std::advance(it, pos);
+				return it.pimpl.get()->linker;
+			};
+
+		auto medianOfThree = [&](std::size_t a, std::size_t b, std::size_t c)
+			{
+				if ((a <= b && b <= c) || (c <= b && b <= a))
+					return b;
+				else if ((b <= a && a <= c) || (c <= a && a <= b))
+					return a;
+				else
+					return c;
+			};
+
+		std::function<void(std::size_t, std::size_t)> quickSort = [&](std::size_t begin, std::size_t last)
+			{
+				if (begin < last)
+				{
+					const std::size_t pivotIndex = medianOfThree(begin, (begin + last) / 2, last);
+					link* pivotlinker = getLinkerAt(pivotIndex);
+					const auto& pivotValue = static_cast<node*>(pivotlinker)->value;
+
+					link* lastlinker = getLinkerAt(last);
+
+					swapElements(pivotlinker, lastlinker);
+
+					std::size_t tracker = begin;
+
+					for (std::size_t i = begin; i < last; i++)
+					{
+						if (static_cast<node*>(getLinkerAt(i))->value < pivotValue)
+						{
+							swapElements(getLinkerAt(i), getLinkerAt(tracker));
+							++tracker;
+						}
+					}
+
+					swapElements(getLinkerAt(tracker), getLinkerAt(last));
+					if (tracker != 0)
+						quickSort(begin, tracker - 1);
+					quickSort(tracker + 1, last);
+				}
+			};
+
+		quickSort(0, std::size_t(nelms - 1));
+	}
 };
